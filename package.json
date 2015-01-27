@@ -1,0 +1,25 @@
+{
+  "name": "foreign",
+  "version": "1.0.0",
+  "description": "Asnyc map that actualy works. Parallel and Series",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "node ./tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MauriceButler/foreign.git"
+  },
+  "author": "Maurice Butler <maurice.butler@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MauriceButler/foreign/issues"
+  },
+  "homepage": "https://github.com/MauriceButler/foreign",
+  "devDependencies": {
+    "tape": "^3.4.0"
+  }
+}
