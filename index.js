@@ -5,7 +5,7 @@ function parallel(fn, items, callback){
 
     var keys = Object.keys(items),
         isArray = Array.isArray(items),
-        length = keys.length,
+        length = isArray ? items.length : keys.length,
         finalResult = new items.constructor(),
         done = 0,
         errored;
@@ -51,7 +51,7 @@ function series(fn, items, callback){
 
     var keys = Object.keys(items),
         isArray = Array.isArray(items),
-        length = keys.length,
+        length = isArray ? items.length : keys.length,
         finalResult = new items.constructor();
 
     if(length === 0){
