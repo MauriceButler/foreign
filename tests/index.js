@@ -22,7 +22,7 @@ test('parallel with array', function(t){
         [1,2,3,4],
         function(error, results){
             t.notOk(error, 'no error');
-            t.ok(results[0] <= results[1] && results[1] <= results[2] && results[3] < results[2], 'Correct order of completion');
+            t.ok(results[0] < results[1] && results[1] < results[2] && results[3] < results[2], 'Correct order of completion');
         }
     );
 });
@@ -53,7 +53,7 @@ test('parallel with object', function(t){
         },
         function(error, results){
             t.notOk(error, 'no error');
-            t.ok(results.foo <= results.bar && results.bar <= results.meh && results.stuff < results.meh, 'Correct order of completion');
+            t.ok(results.foo < results.bar && results.bar < results.meh && results.stuff < results.meh, 'Correct order of completion');
         }
     );
 });
@@ -79,7 +79,7 @@ test('series with array', function(t){
         [1,2,3,4],
         function(error, results){
             t.notOk(error, 'no error');
-            t.ok(results[0] <= results[1] && results[1] <= results[2] && results[2] < results[3], 'Correct order of completion');
+            t.ok(results[0] < results[1] && results[1] < results[2] && results[2] < results[3], 'Correct order of completion');
         }
     );
 });
@@ -110,7 +110,7 @@ test('series with object', function(t){
         },
         function(error, results){
             t.notOk(error, 'no error');
-            t.ok(results.foo <= results.bar && results.bar <= results.meh && results.meh < results.stuff, 'Correct order of completion');
+            t.ok(results.foo < results.bar && results.bar < results.meh && results.meh < results.stuff, 'Correct order of completion');
         }
     );
 });
