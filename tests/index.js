@@ -127,3 +127,37 @@ test('series handles object with no keys', function(t){
         }
     );
 });
+
+test('parallel with array with extra keys', function(t){
+    t.plan(2);
+
+    var items = [1,2,3,4];
+
+    items.foo = 'bar';
+
+    foreign.parallel(
+        processItems,
+        items,
+        function(error, results){
+            t.notOk(error, 'no error');
+            t.ok(results.length === 4, 'Correct number of results');
+        }
+    );
+});
+
+test('series with array with extra keys', function(t){
+    t.plan(2);
+
+    var items = [1,2,3,4];
+
+    items.foo = 'bar';
+
+    foreign.parallel(
+        processItems,
+        items,
+        function(error, results){
+            t.notOk(error, 'no error');
+            t.ok(results.length === 4, 'Correct number of results');
+        }
+    );
+});
