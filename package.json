@@ -1,6 +1,6 @@
 {
   "name": "foreign",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Asnyc map that actualy works. Parallel and Series",
   "main": "index.js",
   "directories": {
