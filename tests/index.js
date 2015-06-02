@@ -161,3 +161,24 @@ test('series with array with extra keys', function(t){
         }
     );
 });
+
+test('parallel error on last item wont callback twice', function(t){
+    t.plan(2);
+
+    var items = [1,2,3,4];
+
+    foreign.parallel(
+        function(item, callback){
+            if(item === 4){
+                return callback('BANG');
+            }
+
+            callback(null, item);
+        },
+        items,
+        function(error, results){
+            t.equal(error, 'BANG', 'correct error');
+            t.notOk(results, 'no results');
+        }
+    );
+});

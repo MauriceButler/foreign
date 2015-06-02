@@ -23,10 +23,10 @@ function parallel(fn, items, callback){
 
             if(error){
                 errored = true;
-                callback(error);
-            } else {
-                finalResult[key] = arguments.length > 2 ? Array.prototype.slice.call(arguments, 1) : result;
+                return callback(error);
             }
+
+            finalResult[key] = arguments.length > 2 ? Array.prototype.slice.call(arguments, 1) : result;
 
             if(++done === length){
                 callback(null, finalResult);
