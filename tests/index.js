@@ -182,3 +182,18 @@ test('parallel error on last item wont callback twice', function(t){
         }
     );
 });
+
+test('handels additional arguments', function(t){
+    t.plan(2);
+
+    foreign.series(
+        function(item, callback){
+            callback(null, item, 'foo');
+        },
+        [1,2,3],
+        function(error, results){
+            t.notOk(error, 'no error');
+            t.deepEqual(results, [[1, 'foo'], [2, 'foo'], [3, 'foo']], 'correct result');
+        }
+    );
+});
