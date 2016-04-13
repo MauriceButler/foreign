@@ -4,6 +4,10 @@ var test = require('tape'),
 
 
 function processItems(item, callback){
+    if(item === undefined){
+        throw new Error('item is undefined');
+    }
+
     if(item !== 3){
         return callback(null, majigger++);
     }
@@ -197,3 +201,4 @@ test('handels additional arguments', function(t){
         }
     );
 });
+

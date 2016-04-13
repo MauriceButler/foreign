@@ -67,7 +67,7 @@ function series(fn, items, callback){
             return next(index);
         }
 
-        fn(items[keys[key]], function (error, result) {
+        fn(items[key], function (error, result) {
             if(error){
                 return callback(error);
             }
