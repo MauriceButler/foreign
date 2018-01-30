@@ -1,34 +1,33 @@
-function parallel(fn, items, callback){
-    if(!items || typeof items !== 'object'){
+function parallel(fn, items, callback) {
+    if (!items || typeof items !== 'object') {
         throw new Error('Items must be an object or an array');
     }
 
-    var keys = Object.keys(items),
-        isArray = Array.isArray(items),
-        length = isArray ? items.length : keys.length,
-        finalResult = new items.constructor(),
-        done = 0,
-        errored;
+    var keys = Object.keys(items);
+    var isArray = Array.isArray(items);
+    var length = isArray ? items.length : keys.length;
+    var finalResult = new items.constructor();
+    var done = 0;
+    var errored;
 
-    if(length === 0){
+    if (length === 0) {
         return callback(null, finalResult);
     }
 
-    function isDone(key){
-        return function(error, result){
-
-            if(errored){
+    function isDone(key) {
+        return function (error, result) {
+            if (errored) {
                 return;
             }
 
-            if(error){
+            if (error) {
                 errored = true;
                 return callback(error);
             }
 
             finalResult[key] = arguments.length > 2 ? Array.prototype.slice.call(arguments, 1) : result;
 
-            if(++done === length){
+            if (++done === length) {
                 callback(null, finalResult);
             }
         };
@@ -36,7 +35,7 @@ function parallel(fn, items, callback){
 
     for (var i = 0; i < length; i++) {
         var key = keys[i];
-        if(isArray && isNaN(key)){
+        if (isArray && isNaN(key)) {
             continue;
         }
 
@@ -44,37 +43,37 @@ function parallel(fn, items, callback){
     }
 }
 
-function series(fn, items, callback){
-    if(!items || typeof items !== 'object'){
+function series(fn, items, callback) {
+    if (!items || typeof items !== 'object') {
         throw new Error('Items must be an object or an array');
     }
 
-    var keys = Object.keys(items),
-        isArray = Array.isArray(items),
-        length = isArray ? items.length : keys.length,
-        finalResult = new items.constructor();
+    var keys = Object.keys(items);
+    var isArray = Array.isArray(items);
+    var length = isArray ? items.length : keys.length;
+    var finalResult = new items.constructor();
 
-    if(length === 0){
+    if (length === 0) {
         return callback(null, finalResult);
     }
 
-    function next(index){
+    function next(index) {
         var key = keys[index];
 
         index++;
 
-        if(isArray && isNaN(key)){
+        if (isArray && isNaN(key)) {
             return next(index);
         }
 
         fn(items[key], function (error, result) {
-            if(error){
+            if (error) {
                 return callback(error);
             }
 
             finalResult[key] = arguments.length > 2 ? Array.prototype.slice.call(arguments, 1) : result;
 
-            if(index === length){
+            if (index === length) {
                 return callback(null, finalResult);
             }
 
@@ -86,6 +85,6 @@ function series(fn, items, callback){
 }
 
 module.exports = {
-    parallel: parallel,
-    series: series
+    parallel,
+    series,
 };
