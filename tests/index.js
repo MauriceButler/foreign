@@ -202,3 +202,23 @@ test('handels additional arguments', function(t){
     );
 });
 
+test('series with massive stack', function(t){
+    t.plan(2);
+
+    var data = [];
+
+    for (var i = 0; i < 50000; i++) {
+        data.push(i);
+    }
+
+    foreign.series(
+        function(item, callback){
+            callback(null, item);
+        },
+        data,
+        function(error, result){
+            t.notOk(error, 'no error');
+            t.equal(50000, result.length, 'didnt explode');
+        }
+    );
+});
