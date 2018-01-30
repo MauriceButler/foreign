@@ -78,7 +78,7 @@ function series(fn, items, callback){
                 return callback(null, finalResult);
             }
 
-            next(index);
+            setImmediate(() => next(index));
         });
     }
 
