@@ -94,6 +94,7 @@ function seriesAll(fn, items, callback) {
     var length = isArray ? items.length : keys.length;
     var finalResult = new items.constructor();
     var errors = new items.constructor();
+    var hasErrored = false;
 
     if (length === 0) {
         return callback(null, finalResult);
@@ -110,13 +111,14 @@ function seriesAll(fn, items, callback) {
 
         fn(items[key], function (error, result) {
             if (error) {
+                hasErrored = true;
                 errors[key] = error;
             } else {
                 finalResult[key] = arguments.length > 2 ? Array.prototype.slice.call(arguments, 1) : result;
             }
 
             if (index === length) {
-                return callback(errors.length ? errors : null, finalResult);
+                return callback(hasErrored ? errors : null, finalResult);
             }
 
             setImmediate(() => next(index));

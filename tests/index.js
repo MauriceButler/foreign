@@ -335,7 +335,7 @@ test('seriesAll with massive stack', function (t) {
 });
 
 test('seriesAll with errors will run all items', function (t) {
-    t.plan(2);
+    t.plan(3);
 
     foreign.seriesAll(
         function(item, callback) {
@@ -349,6 +349,7 @@ test('seriesAll with errors will run all items', function (t) {
         },
         [1,2,3,4],
         function (error, results) {
+            t.equal(error.length, 4, 'ok error length');
             t.deepEqual(error, [, 2, , 4], 'no error');
             t.deepEqual(results, [1, , [3, 'hi'], ], 'Handles object with no keys');
         }
