@@ -60,8 +60,10 @@ foreign.seriesAll(
     },
     items,
     function(error, result) {
-        // 'error' will always be a sparse array of errors
-        // 'result' will always be a sparse array of results
+        // 'error' will always be a either array or object of errors
+        // 'result' will always be a either array or object of results
+        // depending on the type `items` is.
+        //
         // All items will be processed in order even if
         // some return errors. `foreign.series` will return
         // on first error
