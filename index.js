@@ -84,7 +84,50 @@ function series(fn, items, callback) {
     next(0);
 }
 
+function seriesAll(fn, items, callback) {
+    if (!items || typeof items !== 'object') {
+        throw new Error('Items must be an object or an array');
+    }
+
+    var keys = Object.keys(items);
+    var isArray = Array.isArray(items);
+    var length = isArray ? items.length : keys.length;
+    var finalResult = new items.constructor();
+    var errors = new items.constructor();
+
+    if (length === 0) {
+        return callback(null, finalResult);
+    }
+
+    function next(index) {
+        var key = keys[index];
+
+        index++;
+
+        if (isArray && isNaN(key)) {
+            return next(index);
+        }
+
+        fn(items[key], function (error, result) {
+            if (error) {
+                errors[key] = error;
+            } else {
+                finalResult[key] = arguments.length > 2 ? Array.prototype.slice.call(arguments, 1) : result;
+            }
+
+            if (index === length) {
+                return callback(errors.length ? errors : null, finalResult);
+            }
+
+            setImmediate(() => next(index));
+        });
+    }
+
+    next(0);
+}
+
 module.exports = {
     parallel,
     series,
+    seriesAll,
 };
