@@ -64,9 +64,16 @@ foreign.seriesAll(
         // 'result' will always be a either array or object of results
         // depending on the type `items` is.
         //
+        // NOTE: `error.length` is not a reliable indicator of number of errors
+        //
         // All items will be processed in order even if
         // some return errors. `foreign.series` will return
         // on first error
+
+        // example error checking:
+        if (error) {
+            var itemsThatFailed = Object.keys(error);
+        }
     }
 );
 
