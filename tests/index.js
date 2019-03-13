@@ -234,3 +234,124 @@ test('series with massive stack', function (t) {
         }
     );
 });
+
+test('seriesAll with array', function (t) {
+    t.plan(2);
+
+    foreign.seriesAll(
+        processItems,
+        [1, 2, 3, 4],
+        function (error, results) {
+            t.notOk(error, 'no error');
+            t.ok(
+                results[0] < results[1] && results[1] < results[2] && results[2] < results[3],
+                'Correct order of completion'
+            );
+        }
+    );
+});
+
+test('seriesAll handles empty array', function (t) {
+    t.plan(2);
+
+    foreign.seriesAll(
+        processItems,
+        [],
+        function (error, results) {
+            t.notOk(error, 'no error');
+            t.deepEqual(results, [], 'Handles empty array');
+        }
+    );
+});
+
+test('seriesAll with object', function (t) {
+    t.plan(2);
+
+    foreign.seriesAll(
+        processItems,
+        {
+            foo: 1,
+            bar: 2,
+            meh: 3,
+            stuff: 4,
+        },
+        function (error, results) {
+            t.notOk(error, 'no error');
+            t.ok(
+                results.foo < results.bar && results.bar < results.meh && results.meh < results.stuff,
+                'Correct order of completion'
+            );
+        }
+    );
+});
+
+test('seriesAll handles object with no keys', function (t) {
+    t.plan(2);
+
+    foreign.seriesAll(
+        processItems,
+        {},
+        function (error, results) {
+            t.notOk(error, 'no error');
+            t.deepEqual(results, {}, 'Handles object with no keys');
+        }
+    );
+});
+
+test('handles additional arguments', function (t) {
+    t.plan(2);
+
+    foreign.seriesAll(
+        function (item, callback) {
+            callback(null, item, 'foo');
+        },
+        [1, 2, 3],
+        function (error, results) {
+            t.notOk(error, 'no error');
+            t.deepEqual(results, [[1, 'foo'], [2, 'foo'], [3, 'foo']], 'correct result');
+        }
+    );
+});
+
+test('seriesAll with massive stack', function (t) {
+    t.plan(2);
+
+    var data = [];
+
+    for (var i = 0; i < 50000; i++) {
+        data.push(i);
+    }
+
+    foreign.seriesAll(
+        function (item, callback) {
+            callback(null, item);
+        },
+        data,
+        function (error, result) {
+            t.notOk(error, 'no error');
+            t.equal(50000, result.length, 'didnt explode');
+        }
+    );
+});
+
+test('seriesAll with errors will run all items', function (t) {
+    t.plan(3);
+
+    foreign.seriesAll(
+        function(item, callback) {
+            if (item % 2 === 0) {
+                return callback(item);
+            }
+            if (item % 3 === 0) {
+                return callback(null, item, 'hi');
+            }
+            return callback(null, item);
+        },
+        [1,2,3,4],
+        function (error, results) {
+            t.equal(error.length, 4, 'ok error length');
+            t.deepEqual(error, [, 2, , 4], 'no error');
+            t.deepEqual(results, [1, , [3, 'hi'], ], 'Handles object with no keys');
+        }
+    );
+});

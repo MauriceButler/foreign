@@ -48,6 +48,37 @@ foreign.series(
 
 ```
 
+### SeriesAll
+
+```javascript
+
+var items = [1,2,3];
+
+foreign.seriesAll(
+    function(item, callback) {
+        somethingAsync(item, callback);
+    },
+    items,
+    function(error, result) {
+        // 'error' will always be a either array or object of errors
+        // 'result' will always be a either array or object of results
+        // depending on the type `items` is.
+        //
+        // NOTE: `error.length` is not a reliable indicator of number of errors
+        //
+        // All items will be processed in order even if
+        // some return errors. `foreign.series` will return
+        // on first error
+
+        // example error checking:
+        if (error) {
+            var itemsThatFailed = Object.keys(error);
+        }
+    }
+);
+
+```
+
 ### Multiple return values
 
 ```javascript
