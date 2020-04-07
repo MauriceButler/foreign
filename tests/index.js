@@ -1,7 +1,8 @@
-var test = require('tape'),
-    foreign = require('../'),
-    majigger = 0;
+/* eslint-disable no-sparse-arrays */
+const test = require('tape');
+const foreign = require('..');
 
+let majigger = 0;
 
 function processItems(item, callback) {
     if (item === undefined) {
@@ -12,42 +13,31 @@ function processItems(item, callback) {
         return callback(null, majigger++);
     }
 
-    setTimeout(function () {
-        callback(null, majigger++);
-    }, 500);
+    setTimeout(() => callback(null, majigger++), 500);
 }
 
-
-test('parallel with array', function (t) {
+test('parallel with array', (t) => {
     t.plan(2);
 
-    foreign.parallel(
-        processItems,
-        [1, 2, 3, 4],
-        function (error, results) {
-            t.notOk(error, 'no error');
-            t.ok(
-                results[0] < results[1] && results[1] < results[2] && results[3] < results[2],
-                'Correct order of completion'
-            );
-        }
-    );
+    foreign.parallel(processItems, [1, 2, 3, 4], (error, results) => {
+        t.notOk(error, 'no error');
+        t.ok(
+            results[0] < results[1] && results[1] < results[2] && results[3] < results[2],
+            'Correct order of completion',
+        );
+    });
 });
 
-test('parallel handles empty array', function (t) {
+test('parallel handles empty array', (t) => {
     t.plan(2);
 
-    foreign.parallel(
-        processItems,
-        [],
-        function (error, results) {
-            t.notOk(error, 'no error');
-            t.deepEqual(results, [], 'Handles empty array');
-        }
-    );
+    foreign.parallel(processItems, [], (error, results) => {
+        t.notOk(error, 'no error');
+        t.deepEqual(results, [], 'Handles empty array');
+    });
 });
 
-test('parallel with object', function (t) {
+test('parallel with object', (t) => {
     t.plan(2);
 
     foreign.parallel(
@@ -58,59 +48,47 @@ test('parallel with object', function (t) {
             meh: 3,
             stuff: 4,
         },
-        function (error, results) {
+        (error, results) => {
             t.notOk(error, 'no error');
             t.ok(
                 results.foo < results.bar && results.bar < results.meh && results.stuff < results.meh,
-                'Correct order of completion'
+                'Correct order of completion',
             );
-        }
+        },
     );
 });
 
-test('parallel handles object with no keys', function (t) {
+test('parallel handles object with no keys', (t) => {
     t.plan(2);
 
-    foreign.parallel(
-        processItems,
-        {},
-        function (error, results) {
-            t.notOk(error, 'no error');
-            t.deepEqual(results, {}, 'Handles object with no keys');
-        }
-    );
+    foreign.parallel(processItems, {}, (error, results) => {
+        t.notOk(error, 'no error');
+        t.deepEqual(results, {}, 'Handles object with no keys');
+    });
 });
 
-test('series with array', function (t) {
+test('series with array', (t) => {
     t.plan(2);
 
-    foreign.series(
-        processItems,
-        [1, 2, 3, 4],
-        function (error, results) {
-            t.notOk(error, 'no error');
-            t.ok(
-                results[0] < results[1] && results[1] < results[2] && results[2] < results[3],
-                'Correct order of completion'
-            );
-        }
-    );
+    foreign.series(processItems, [1, 2, 3, 4], (error, results) => {
+        t.notOk(error, 'no error');
+        t.ok(
+            results[0] < results[1] && results[1] < results[2] && results[2] < results[3],
+            'Correct order of completion',
+        );
+    });
 });
 
-test('series handles empty array', function (t) {
+test('series handles empty array', (t) => {
     t.plan(2);
 
-    foreign.series(
-        processItems,
-        [],
-        function (error, results) {
-            t.notOk(error, 'no error');
-            t.deepEqual(results, [], 'Handles empty array');
-        }
-    );
+    foreign.series(processItems, [], (error, results) => {
+        t.notOk(error, 'no error');
+        t.deepEqual(results, [], 'Handles empty array');
+    });
 });
 
-test('series with object', function (t) {
+test('series with object', (t) => {
     t.plan(2);
 
     foreign.series(
@@ -121,70 +99,58 @@ test('series with object', function (t) {
             meh: 3,
             stuff: 4,
         },
-        function (error, results) {
+        (error, results) => {
             t.notOk(error, 'no error');
             t.ok(
                 results.foo < results.bar && results.bar < results.meh && results.meh < results.stuff,
-                'Correct order of completion'
+                'Correct order of completion',
             );
-        }
+        },
     );
 });
 
-test('series handles object with no keys', function (t) {
+test('series handles object with no keys', (t) => {
     t.plan(2);
 
-    foreign.series(
-        processItems,
-        {},
-        function (error, results) {
-            t.notOk(error, 'no error');
-            t.deepEqual(results, {}, 'Handles object with no keys');
-        }
-    );
+    foreign.series(processItems, {}, (error, results) => {
+        t.notOk(error, 'no error');
+        t.deepEqual(results, {}, 'Handles object with no keys');
+    });
 });
 
-test('parallel with array with extra keys', function (t) {
+test('parallel with array with extra keys', (t) => {
     t.plan(2);
 
-    var items = [1, 2, 3, 4];
+    const items = [1, 2, 3, 4];
 
     items.foo = 'bar';
 
-    foreign.parallel(
-        processItems,
-        items,
-        function (error, results) {
-            t.notOk(error, 'no error');
-            t.ok(results.length === 4, 'Correct number of results');
-        }
-    );
+    foreign.parallel(processItems, items, (error, results) => {
+        t.notOk(error, 'no error');
+        t.ok(results.length === 4, 'Correct number of results');
+    });
 });
 
-test('series with array with extra keys', function (t) {
+test('series with array with extra keys', (t) => {
     t.plan(2);
 
-    var items = [1, 2, 3, 4];
+    const items = [1, 2, 3, 4];
 
     items.foo = 'bar';
 
-    foreign.parallel(
-        processItems,
-        items,
-        function (error, results) {
-            t.notOk(error, 'no error');
-            t.ok(results.length === 4, 'Correct number of results');
-        }
-    );
+    foreign.parallel(processItems, items, (error, results) => {
+        t.notOk(error, 'no error');
+        t.ok(results.length === 4, 'Correct number of results');
+    });
 });
 
-test('parallel error on last item wont callback twice', function (t) {
+test('parallel error on last item wont callback twice', (t) => {
     t.plan(2);
 
-    var items = [1, 2, 3, 4];
+    const items = [1, 2, 3, 4];
 
     foreign.parallel(
-        function (item, callback) {
+        (item, callback) => {
             if (item === 4) {
                 return callback('BANG');
             }
@@ -192,79 +158,79 @@ test('parallel error on last item wont callback twice', function (t) {
             callback(null, item);
         },
         items,
-        function (error, results) {
+        (error, results) => {
             t.equal(error, 'BANG', 'correct error');
             t.notOk(results, 'no results');
-        }
+        },
     );
 });
 
-test('handels additional arguments', function (t) {
+test('handels additional arguments', (t) => {
     t.plan(2);
 
     foreign.series(
-        function (item, callback) {
+        (item, callback) => {
             callback(null, item, 'foo');
         },
         [1, 2, 3],
-        function (error, results) {
+        (error, results) => {
             t.notOk(error, 'no error');
-            t.deepEqual(results, [[1, 'foo'], [2, 'foo'], [3, 'foo']], 'correct result');
-        }
+            t.deepEqual(
+                results,
+                [
+                    [1, 'foo'],
+                    [2, 'foo'],
+                    [3, 'foo'],
+                ],
+                'correct result',
+            );
+        },
     );
 });
 
-test('series with massive stack', function (t) {
+test('series with massive stack', (t) => {
     t.plan(2);
 
-    var data = [];
+    const data = [];
 
-    for (var i = 0; i < 50000; i++) {
+    for (let i = 0; i < 50000; i++) {
         data.push(i);
     }
 
     foreign.series(
-        function (item, callback) {
+        (item, callback) => {
             callback(null, item);
         },
         data,
-        function (error, result) {
+        (error, result) => {
             t.notOk(error, 'no error');
             t.equal(50000, result.length, 'didnt explode');
-        }
+        },
     );
 });
 
-test('seriesAll with array', function (t) {
+test('seriesAll with array', (t) => {
     t.plan(2);
 
-    foreign.seriesAll(
-        processItems,
-        [1, 2, 3, 4],
-        function (error, results) {
-            t.notOk(error, 'no error');
-            t.ok(
-                results[0] < results[1] && results[1] < results[2] && results[2] < results[3],
-                'Correct order of completion'
-            );
-        }
-    );
+    foreign.seriesAll(processItems, [1, 2, 3, 4], (error, results) => {
+        t.notOk(error, 'no error');
+        t.ok(
+            results[0] < results[1] && results[1] < results[2] && results[2] < results[3],
+            'Correct order of completion',
+        );
+    });
 });
 
-test('seriesAll handles empty array', function (t) {
+test('seriesAll handles empty array', (t) => {
     t.plan(2);
 
-    foreign.seriesAll(
-        processItems,
-        [],
-        function (error, results) {
-            t.notOk(error, 'no error');
-            t.deepEqual(results, [], 'Handles empty array');
-        }
-    );
+    foreign.seriesAll(processItems, [], (error, results) => {
+        t.notOk(error, 'no error');
+        t.deepEqual(results, [], 'Handles empty array');
+    });
 });
 
-test('seriesAll with object', function (t) {
+test('seriesAll with object', (t) => {
     t.plan(2);
 
     foreign.seriesAll(
@@ -275,70 +241,74 @@ test('seriesAll with object', function (t) {
             meh: 3,
             stuff: 4,
         },
-        function (error, results) {
+        (error, results) => {
             t.notOk(error, 'no error');
             t.ok(
                 results.foo < results.bar && results.bar < results.meh && results.meh < results.stuff,
-                'Correct order of completion'
+                'Correct order of completion',
             );
-        }
+        },
     );
 });
 
-test('seriesAll handles object with no keys', function (t) {
+test('seriesAll handles object with no keys', (t) => {
     t.plan(2);
 
-    foreign.seriesAll(
-        processItems,
-        {},
-        function (error, results) {
-            t.notOk(error, 'no error');
-            t.deepEqual(results, {}, 'Handles object with no keys');
-        }
-    );
+    foreign.seriesAll(processItems, {}, (error, results) => {
+        t.notOk(error, 'no error');
+        t.deepEqual(results, {}, 'Handles object with no keys');
+    });
 });
 
-test('handles additional arguments', function (t) {
+test('handles additional arguments', (t) => {
     t.plan(2);
 
     foreign.seriesAll(
-        function (item, callback) {
+        (item, callback) => {
             callback(null, item, 'foo');
         },
         [1, 2, 3],
-        function (error, results) {
+        (error, results) => {
             t.notOk(error, 'no error');
-            t.deepEqual(results, [[1, 'foo'], [2, 'foo'], [3, 'foo']], 'correct result');
-        }
+            t.deepEqual(
+                results,
+                [
+                    [1, 'foo'],
+                    [2, 'foo'],
+                    [3, 'foo'],
+                ],
+                'correct result',
+            );
+        },
     );
 });
 
-test('seriesAll with massive stack', function (t) {
+test('seriesAll with massive stack', (t) => {
     t.plan(2);
 
-    var data = [];
+    const data = [];
 
-    for (var i = 0; i < 50000; i++) {
+    for (let i = 0; i < 50000; i++) {
         data.push(i);
     }
 
     foreign.seriesAll(
-        function (item, callback) {
+        (item, callback) => {
             callback(null, item);
         },
         data,
-        function (error, result) {
+        (error, result) => {
             t.notOk(error, 'no error');
             t.equal(50000, result.length, 'didnt explode');
-        }
+        },
     );
 });
 
-test('seriesAll with errors will run all items', function (t) {
+test('seriesAll with errors will run all items', (t) => {
     t.plan(3);
 
     foreign.seriesAll(
-        function(item, callback) {
+        (item, callback) => {
             if (item % 2 === 0) {
                 return callback(item);
             }
@@ -347,11 +317,55 @@ test('seriesAll with errors will run all items', function (t) {
             }
             return callback(null, item);
         },
-        [1,2,3,4],
-        function (error, results) {
+        [1, 2, 3, 4],
+        (error, results) => {
             t.equal(error.length, 4, 'ok error length');
             t.deepEqual(error, [, 2, , 4], 'no error');
-            t.deepEqual(results, [1, , [3, 'hi'], ], 'Handles object with no keys');
-        }
+            t.deepEqual(results, [1, , [3, 'hi']], 'Handles object with no keys');
+        },
     );
+});
+
+test('seriesPromise runs in order', async (t) => {
+    t.plan(1);
+
+    const result = await foreign.seriesPromise(
+        (item) => {
+            if (item % 2 === 0) {
+                return new Promise((resolve) => setTimeout(() => resolve(item), 10));
+            }
+            if (item % 3 === 0) {
+                return new Promise((resolve) => setTimeout(() => resolve(item), 50));
+            }
+            return new Promise((resolve) => setTimeout(() => resolve(item), 30));
+        },
+        [1, 2, 3, 4],
+    );
+
+    t.deepEqual(result, [1, 2, 3, 4], 'results in order');
+});
+
+test('seriesPromise stops on error', async (t) => {
+    t.plan(2);
+    let error;
+
+    try {
+        await foreign.seriesPromise(
+            (item) => {
+                if (item % 2 === 0) {
+                    return new Promise((resolve) => setTimeout(() => resolve(item), 10));
+                }
+                if (item % 3 === 0) {
+                    return new Promise((resolve, reject) => setTimeout(() => reject(new Error(`${item} was bad`)), 50));
+                }
+                return new Promise((resolve) => setTimeout(() => resolve(item), 30));
+            },
+            [1, 2, 3, 4],
+        );
+    } catch (exception) {
+        error = exception;
+    }
+
+    t.ok(error instanceof Error, 'is an error');
+    t.equal(error.message, '3 was bad', 'correct error message');
 });
