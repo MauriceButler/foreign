@@ -1,33 +1,56 @@
 {
-  "name": "foreign",
-  "version": "2.1.0",
-  "description": "Asnyc map that actualy works. Parallel and Series",
-  "main": "index.js",
-  "directories": {
-    "test": "tests"
-  },
-  "scripts": {
-    "test": "node ./tests"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MauriceButler/foreign.git"
-  },
-  "author": "Maurice Butler <maurice.butler@gmail.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/MauriceButler/foreign/issues"
-  },
-  "homepage": "https://github.com/MauriceButler/foreign",
-  "devDependencies": {
-    "tape": "^4.8.0"
-  },
-  "keywords": [
-    "async",
-    "map",
-    "parallel",
-    "series",
-    "for in"
-  ],
-  "dependencies": {}
+    "name": "foreign",
+    "version": "3.0.0",
+    "description": "Asnyc map that actualy works. Parallel and Series",
+    "main": "index.js",
+    "directories": {
+        "test": "tests"
+    },
+    "scripts": {
+        "lint": "eslint . --fix --ext .js",
+        "test": "node ./tests"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/MauriceButler/foreign.git"
+    },
+    "author": "Maurice Butler <maurice.butler@gmail.com>",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/MauriceButler/foreign/issues"
+    },
+    "homepage": "https://github.com/MauriceButler/foreign",
+    "devDependencies": {
+        "eslint": "^6.8.0",
+        "eslint-config-airbnb": "^18.1.0",
+        "eslint-config-prettier": "^6.10.1",
+        "eslint-plugin-import": "^2.20.2",
+        "husky": "^4.2.3",
+        "lint-staged": "^10.1.2",
+        "prettier": "^2.0.4",
+        "tape": "^4.8.0"
+    },
+    "keywords": [
+        "async",
+        "map",
+        "parallel",
+        "series",
+        "for in"
+    ],
+    "dependencies": {},
+    "lint-staged": {
+        "*.js": [
+            "prettier --write",
+            "eslint --fix"
+        ],
+        "*.json": [
+            "prettier --write"
+        ]
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged",
+            "pre-push": "npm run lint"
+        }
+    }
 }
