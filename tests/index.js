@@ -199,7 +199,11 @@ test('series with massive stack', (t) => {
 
     foreign.series(
         (item, callback) => {
-            callback(null, item);
+            const a = () => callback(null, item);
+            const b = () => a();
+            const c = () => b();
+
+            c();
         },
         data,
         (error, result) => {
@@ -345,19 +349,62 @@ test('seriesPromise runs in order', async (t) => {
     t.deepEqual(result, [1, 2, 3, 4], 'results in order');
 });
 
+test('seriesPromise works with an object', async (t) => {
+    t.plan(1);
+
+    const result = await foreign.seriesPromise(
+        async (item) => {
+            if (item % 2 === 0) {
+                return new Promise((resolve) => setTimeout(() => resolve(item), 10));
+            }
+            if (item % 3 === 0) {
+                return new Promise((resolve) => setTimeout(() => resolve(item), 50));
+            }
+            return new Promise((resolve) => setTimeout(() => resolve(item), 30));
+        },
+        { beep: 1, boop: 2, foo: 3, bar: 4 },
+    );
+
+    t.deepEqual(result, { beep: 1, boop: 2, foo: 3, bar: 4 }, 'results in order');
+});
+
+test('seriesPromise with massive stack', async (t) => {
+    t.plan(1);
+
+    const data = [];
+
+    for (let i = 0; i < 50000; i++) {
+        data.push(i);
+    }
+
+    const result = await foreign.seriesPromise(async (item) => {
+        const a = () => item;
+        const b = () => a();
+        const c = () => b();
+
+        return c();
+    }, data);
+
+    t.equal(50000, result.length, 'didnt explode');
+});
+
 test('seriesPromise stops on error', async (t) => {
     t.plan(2);
     let error;
 
     try {
         await foreign.seriesPromise(
-            (item) => {
+            async (item) => {
                 if (item % 2 === 0) {
+                    if (item === 4) {
+                        t.fail('should have stopped at 3');
+                    }
                     return new Promise((resolve) => setTimeout(() => resolve(item), 10));
                 }
                 if (item % 3 === 0) {
                     return new Promise((resolve, reject) => setTimeout(() => reject(new Error(`${item} was bad`)), 50));
                 }
+
                 return new Promise((resolve) => setTimeout(() => resolve(item), 30));
             },
             [1, 2, 3, 4],
