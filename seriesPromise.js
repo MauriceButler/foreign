@@ -1,20 +1,20 @@
 async function seriesPromise(fn, items) {
-    const results = [];
+    const keys = Object.keys(items);
+    const isArray = Array.isArray(items);
+    const length = isArray ? items.length : keys.length;
+    const finalResult = new items.constructor();
 
-    for (let i = 0; i < items.length; i++) {
-        let result;
-        const item = items[i];
+    for (let i = 0; i < length; i++) {
+        const key = keys[i];
 
-        try {
-            result = await fn(item);
-        } catch (error) {
-            return Promise.reject(error);
+        if (isArray && isNaN(key)) {
+            continue;
         }
 
-        results.push(result);
+        finalResult[keys[i]] = await fn(items[key]);
     }
 
-    return results;
+    return finalResult;
 }
 
 module.exports = seriesPromise;

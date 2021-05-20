@@ -1,6 +1,6 @@
 {
     "name": "foreign",
-    "version": "3.0.0",
+    "version": "3.1.0",
     "description": "Asnyc map that actualy works. Parallel and Series",
     "main": "index.js",
     "directories": {
@@ -8,7 +8,8 @@
     },
     "scripts": {
         "lint": "eslint . --fix --ext .js",
-        "test": "node ./tests"
+        "test": "node ./tests",
+        "prepare": "husky install"
     },
     "repository": {
         "type": "git",
@@ -21,14 +22,14 @@
     },
     "homepage": "https://github.com/MauriceButler/foreign",
     "devDependencies": {
-        "eslint": "^6.8.0",
-        "eslint-config-airbnb": "^18.1.0",
-        "eslint-config-prettier": "^6.10.1",
-        "eslint-plugin-import": "^2.20.2",
-        "husky": "^4.2.3",
-        "lint-staged": "^10.1.2",
-        "prettier": "^2.0.4",
-        "tape": "^4.8.0"
+        "eslint": "^7.26.0",
+        "eslint-config-airbnb": "^18.2.1",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-import": "^2.23.2",
+        "husky": "^6.0.0",
+        "lint-staged": "^11.0.0",
+        "prettier": "^2.3.0",
+        "tape": "^5.2.2"
     },
     "keywords": [
         "async",
@@ -37,7 +38,6 @@
         "series",
         "for in"
     ],
-    "dependencies": {},
     "lint-staged": {
         "*.js": [
             "prettier --write",
@@ -46,11 +46,5 @@
         "*.json": [
             "prettier --write"
         ]
-    },
-    "husky": {
-        "hooks": {
-            "pre-commit": "lint-staged",
-            "pre-push": "npm run lint"
-        }
     }
 }
